@@ -1,9 +1,5 @@
-import pandas as pd
-import numpy as np
 import requests
-import matplotlib.pyplot as plt
 import json
-import pprint
 
 
 cov_lat = 52.4068 # Google me!

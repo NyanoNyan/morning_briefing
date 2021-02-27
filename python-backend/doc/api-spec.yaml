@@ -21,13 +21,13 @@ paths:
       description: |
         Handles user auth
       parameters:
-        - in: header
+        - in: query
           name: username
           description: User's unique username
           required: true
           schema:
             type: string
-        - in: header
+        - in: query
           name: password
           description: User's password
           required: true
@@ -95,85 +95,100 @@ paths:
     get:
       tags:
         - reports
-      summary: retrieves a list of every report
+      summary: retrieves a list of all reportIDs
       operationId: listReports
       description: |
-        Retrieves every report stored in the DB
+        Retrieves all ReportIDs
       responses:
         '200':
-          description: search results matching criteria
+          description: success
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/ReportItem'
+                  type: string
+                  format: uuid
+                  example: d290f1ee-6c54-4b01-90e6-d701748f0851
         '400':
           description: error
-  /reports/report/create:
-    post:
-      tags:
-        - reports
-      summary: creates a new report
-      operationId: createReport
-      description: |
-        Creates a new report
-      parameters:
-        - in: header
-          name: reportName
-          description: name of report
-          required: true
-          schema:
-            type: string
-        - in: header
-          name: exampleNumber
-          description: example number
-          schema:
-            type: integer
-            format: int32
-            minimum: 0
-            maximum: 50
-      responses:
-        '201':
-          description: successfully created report
-        '400':
-          description: error while creating report
-  /reports/report/update:
-    post:
-      tags:
-        - reports
-      summary: updates an existing report
-      operationId: updateReport
-      description: |
-        Updates an existing report
-      parameters:
-        - in: header
-          name: reportId
-          description: UUID of report
-          required: true
-          schema:
-            type: string
-        - in: header
-          name: exampleNumber
-          description: example number
-          schema:
-            type: integer
-            format: int32
-            minimum: 0
-            maximum: 50
-      responses:
-        '201':
-          description: successfully created report
-        '400':
-          description: error while creating report
-  /reports/report/search:
+  /reports/search:
     post:
       tags:
         - reports
       summary: retrieves a report
       operationId: getReportByUUID
       description: |
-        Retrieves information about a report via UUID
+        Retrieves all information about a report via UUID
+      parameters:
+        - in: query
+          name: reportId
+          description: UUID of report
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: report has been found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ReportItem'
+        '400':
+          description: error
+  /reports/report:
+    post:
+      tags:
+        - reports
+      summary: creates a new report
+      operationId: createReport
+      description: |
+        Creates new report
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReportItem'
+      responses:
+        '201':
+          description: successfully created report
+        '400':
+          description: error while creating report
+    put:
+      tags:
+        - reports
+      summary: updates an existing report
+      operationId: updateReportByUUID
+      description: |
+        Updates report with specified UUID
+      parameters:
+        - in: query
+          name: reportId
+          description: UUID of report
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReportItem'
+      responses:
+        '200':
+          description: successfully updated report
+        '400':
+          description: error while creating report
+    delete:
+      tags:
+        - reports
+      summary: deletes a report
+      operationId: deleteReportByUUID
+      description: |
+        Deletes report with specified UUID
       parameters:
         - in: header
           name: reportId
@@ -183,43 +198,87 @@ paths:
             type: string
       responses:
         '200':
-          description: search results matching criteria
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ReportItem'
+          description: sucessfully deleted
         '400':
           description: error
-  /reports/report/delete:
+  /reports/schedule:
     post:
       tags:
         - reports
-      summary: deletes a report
-      operationId: deleteReportByUUID
+      summary: Schedules a report
+      operationId: scheduleReportByUUID
       description: |
-        Deletes a report with specified UUID
+        Schedules report with specified UUID
       parameters:
-        - in: header
+        - in: query
+          name: reportId
+          description: UUID of report
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: datetime
+          description: Time and date for report to be created
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '201':
+          description: Created
+        '400':
+          description: error
+    put:
+      tags:
+        - reports
+      summary: Updates a report's schedule
+      operationId: updateReportScheduleByUUID
+      description: |
+        Updates schedule of report with specified UUID
+      parameters:
+        - in: query
+          name: reportId
+          description: UUID of report
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: datetime
+          description: Time and date for report to be created
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: Success
+        '400':
+          description: error
+    delete:
+      tags:
+        - reports
+      summary: Deletes a report's schedule
+      operationId: deleteReportScheduleByUUID
+      description: |
+        Deletes schedule of report with specified UUID
+      parameters:
+        - in: query
           name: reportId
           description: UUID of report
           required: true
           schema:
             type: string
       responses:
-        '201':
-          description: sucessfully deleted
+        '200':
+          description: Success
         '400':
           description: error
-  /reports/report/build:
+  /reports/render:
     post:
       tags:
         - reports
       summary: Renders a report
       operationId: renderReportByUUID
       description: |
-        Renders a report with specified UUID
+        Renders report with specified UUID
       parameters:
         - in: header
           name: reportId
@@ -250,7 +309,7 @@ components:
           example: d290f1ee-6c54-4b01-90e6-d701748f0851
         name:
           type: string
-          example: Widget Adapter
+          example: First Briefing
         createdDate:
           type: string
           format: date-time
