@@ -1,0 +1,236 @@
+openapi: 3.0.0
+servers: []
+info:
+  description: This is a simple API for the Morning Breifing project's Django REST API
+  version: "1.0.0"
+  title: Morning Briefing API
+tags:
+  - name: login
+    description: User authentication
+  - name: reports
+    description: Operations to create reports and run them
+paths:
+  /login:
+    post:
+      tags:
+        - login
+      summary: authenticates user
+      operationId: login
+      description: |
+        Handles user auth
+      parameters:
+        - in: header
+          name: username
+          description: User's unique username
+          required: true
+          schema:
+            type: string
+        - in: header
+          name: password
+          description: User's password
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: user authenticated
+        '400':
+          description: incorrect username or password
+  /reports/list:
+    get:
+      tags:
+        - reports
+      summary: retrieves a list of every report
+      operationId: listReports
+      description: |
+        Retrieves every report stored in the DB
+      responses:
+        '200':
+          description: search results matching criteria
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ReportItem'
+        '400':
+          description: error
+  /reports/report/create:
+    post:
+      tags:
+        - reports
+      summary: creates a new report
+      operationId: createReport
+      description: |
+        Creates a new report
+      parameters:
+        - in: header
+          name: reportName
+          description: name of report
+          required: true
+          schema:
+            type: string
+        - in: header
+          name: exampleNumber
+          description: example number
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+            maximum: 50
+      responses:
+        '201':
+          description: successfully created report
+        '400':
+          description: error while creating report
+  /reports/report/update:
+    post:
+      tags:
+        - reports
+      summary: updates an existing report
+      operationId: updateReport
+      description: |
+        Updates an existing report
+      parameters:
+        - in: header
+          name: reportId
+          description: UUID of report
+          required: true
+          schema:
+            type: string
+        - in: header
+          name: exampleNumber
+          description: example number
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+            maximum: 50
+      responses:
+        '201':
+          description: successfully created report
+        '400':
+          description: error while creating report
+  /reports/report/search:
+    post:
+      tags:
+        - reports
+      summary: retrieves a report
+      operationId: getReportByUUID
+      description: |
+        Retrieves information about a report via UUID
+      parameters:
+        - in: header
+          name: reportId
+          description: UUID of report
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: search results matching criteria
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ReportItem'
+        '400':
+          description: error
+  /reports/report/delete:
+    post:
+      tags:
+        - reports
+      summary: deletes a report
+      operationId: deleteReportByUUID
+      description: |
+        Deletes a report with specified UUID
+      parameters:
+        - in: header
+          name: reportId
+          description: UUID of report
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: sucessfully deleted
+        '400':
+          description: error
+  /reports/report/build:
+    post:
+      tags:
+        - reports
+      summary: Renders a report
+      operationId: renderReportByUUID
+      description: |
+        Renders a report with specified UUID
+      parameters:
+        - in: header
+          name: reportId
+          description: UUID of report
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: INSERT PDF HERE
+        '400':
+          description: error
+components:
+  schemas:
+    ReportItem:
+      type: object
+      required:
+        - id
+        - name
+        - WeatherItem
+        - StockList
+        - RunTime
+        - createdDate
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        name:
+          type: string
+          example: Widget Adapter
+        createdDate:
+          type: string
+          format: date-time
+          example: '2020-08-29T09:12:33.001Z'
+        WeatherItem:
+          $ref: '#/components/schemas/WeatherItem'
+        StockList:
+          $ref: '#/components/schemas/StockList'
+    WeatherItem:
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          example: ACME Corporation
+        homePage:
+          type: string
+          format: url
+          example: 'https://www.acme-corp.com'
+        phone:
+          type: string
+          example: 408-867-5309
+      type: object
+    StockList:
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          example: ACME Corporation
+        homePage:
+          type: string
+          format: url
+          example: 'https://www.acme-corp.com'
+        phone:
+          type: string
+          example: 408-867-5309
+      type: object
