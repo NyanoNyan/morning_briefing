@@ -1,6 +1,8 @@
-from flask import Flask, request
+from flask import Flask, request, make_response
 import json
 import datetime
+import pandas as pd
+import csv
 
 # Create the application instance
 app = Flask(__name__)
@@ -56,6 +58,17 @@ def data_stocks():
     ]
 
     return json.dumps(example_stocks), 200, {'ContentType': 'application/json'}
+
+
+@app.route('/reports/report/csv', methods=['POST'])
+def report_csv():
+    temperature = request.args.get('temperature')
+
+    data = pd.DataFrame({'current_temperature': temperature})
+    resp = make_response(data.to_csv())
+    resp.headers["Content-Disposition"] = "attachment; filename=report.csv"
+    resp.headers["Content-Type"] = "text/csv"
+    return resp
 
 
 # If we're running in stand alone mode, run the application

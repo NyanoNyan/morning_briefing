@@ -1,7 +1,7 @@
 # Morning Briefing
 Morning Briefing is a website that allows you to create a dashboard and report with data that is most important to you (such as weather, stocks, covid cases, etc.) and schedule it to be sent to you first thing in the morning.
 
-This project consists of a React frontend that communicates with a Python Flask backend through a REST API. The front-end allows a user to view their data sources on a dashboard and select them to be included in their Morning Briefing' (which is a PDF file that is sent to the user at a set time). The backend supplies the front-end with data from a Weather API & a stocks API and also handles the creation and submission of the 'Morning Briefings'.
+This project consists of a React frontend that communicates with a Python Flask backend through a REST API ([API Design](https://app.swaggerhub.com/apis/Lackshan/WarwickHack21-Project-API/1.0.0#/reports/createReport)). The front-end allows a user to view their data sources on a dashboard and select them to be included in their Morning Briefing' (which is a PDF file that is sent to the user at a set time). The backend supplies the front-end with data from a Weather API & a stocks API and also handles the creation and submission of the 'Morning Briefings'.
 
 ## Actual Implementation
 At this time, only the Dashboard with data sources has been implemented.
