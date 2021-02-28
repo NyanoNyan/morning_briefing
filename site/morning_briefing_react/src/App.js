@@ -29,7 +29,12 @@ const App = () => {
           <Route exact path="/" component={SignIn}/>
         </Switch>
         <Switch>
-          <Route exact path="/briefing" component={Briefing}/>
+          <Route exact path="/briefing" render={() => (
+            <div style={{backgroundImage: `url("img/tt3.jpg")`}}>
+                <Briefing />
+            </div>
+
+          )}/>
         </Switch>
       </BrowserRouter>
     </div>

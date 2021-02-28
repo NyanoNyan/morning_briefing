@@ -1,16 +1,29 @@
 import React, { useState, useEffect } from "react";
 import Plot from 'react-plotly.js';
+import "../style/Briefing.css"
 
 const Briefing = () => {
     const [stockChartXValues, setStockChartXValues] = useState([]);
     const [stockChartYValues, setStockChartYValues] = useState([]);
+    const [currentStock, setCurrentStock] = useState([]);
     const [stockSymbol, setStockSymbol] = useState("");
     const [weatherData, setWeatherData] = useState({});
     
     useEffect(() => {
         fetchStock();
+        // fetchStock2();
         // getWeather();
-        testtest();
+        // testtest();
+        fetch("/data/weather", {method:"POST"})
+            .then(response => response.json())
+            .then((jsonData) => {
+            // jsonData is parsed json object received from url
+            setWeatherData(jsonData);
+        })
+        .catch((error) => {
+        // handle your errors here
+            console.error(error)
+        })
     }, [])
     
     const fetchStock = () => {
@@ -31,7 +44,7 @@ const Briefing = () => {
           .then(
             function(data) {
               console.log(data);
-    
+              setCurrentStock(Object.values(data['Time Series (Daily)'])[0])  ;
               for (var key in data['Time Series (Daily)']) {
                 stockChartXValuesFunction.push(key);
                 stockChartYValuesFunction.push(data['Time Series (Daily)'][key]['1. open']);
@@ -44,50 +57,40 @@ const Briefing = () => {
           )
     }
 
-    // async function getWeather(location = "London", tempUnit = "metric") {
-    //     const apiID = "83155afc4a2fce2bd5ab6c3577570049";
-    //     const errorDiv = document.querySelector(".error");
-    
-    //     try {
-    //         // eslint-disable-next-line prefer-const
-    //         let url = `http://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${apiID}&units=${tempUnit}`;
-    //         const response = await fetch(url, { mode: "cors" });
-    
-    //         const weatherData = await response.json();
-    //         console.log(weatherData)
-    //         // addData1.addWeather(weatherData.main.temp, weatherData.weather[0].description,
-    //         //     weatherData.sys.country, weatherData.name, weatherData.weather[0].icon,
-    //         //     weatherData.dt, weatherData.timezone);
-            
-    //         // Testing
-    //         // console.log(weatherData);
-    //     } catch {
-    //         console.log("Yikes")
-    //     }
-    // }
+    console.log(weatherData);
+    console.log(currentStock);
 
-    async function testtest() {
-        console.log("I'm in test");
-        try {
-            const url = "http://127.0.0.1:5000/data/weather?postcode=DN147BJ";
-            const response = await fetch(url, {method:"POST", mode: "no-cors" });
-            const data = await response.json();
-
-            console.log(response);
-            console.log(data)
-        } catch {
-            console.log("hello");
+    const weatherErrorCheck = (weatherData) => {
+        if (weatherData === {} || weatherData === undefined) {
+            return (
+                <div>
+                    <p>Sunny</p>
+                    <p>11°C</p>
+                    <p>Wind Speed: 22</p>
+                    <p>Humidity: 66</p>
+                </div>
+            )
+        } else {
+            return (
+                <div>
+                <p>{weatherData[1].weather.description}</p>
+                <p>{weatherData[1].temperature} °C</p>
+                <p>Wind Speed: {weatherData[1].wind_speed}</p>
+                <p>Humidity: {weatherData[1].humidity}</p> 
+            </div>
+            )
         }
     }
 
     return (
-        <div>
+        
+        <div className="main-container" >
             {/* <h3>Daily briefing</h3> */}
+            <link href="https://fonts.googleapis.com/css?family=Poppins:600&display=swap" rel="stylesheet" />
             <div className="stock-items">
                 <h4>Stock Briefing</h4>
-                <button>
+                <button className="stock-button">
                     <div className="stock-values">
-                        <p>This is Weather data items</p>
                         <Plot
                         data={[
                             {
@@ -98,26 +101,42 @@ const Briefing = () => {
                             marker: {color: 'red'},
                             }
                         ]}
-                        layout={{width: 580, height: 340, title: `Daily Price Open ${stockSymbol}`}}
-                />
+                        layout={{width: 580, height: 320, title: `Daily Price Open ${stockSymbol}`}}
+                    />
+                    </div>
+                    <div className="text-data-stock">
+                        <p>Key Statistics</p>
+                        <div className="float-left">
+                            <p>Open: {currentStock["1. open"]}</p>
+                            <p>High: {currentStock["2. high"]}</p>
+                        </div>
+                        <div className="float-right">
+                            <p>Low: {currentStock["3. low"]}</p>
+                            <p>Volume: {currentStock["5. volume"]}</p>
+                        </div>
+                        <div className="middle">
+                            <p>Close: {currentStock["4. close"]}</p>
+                        </div>
+
                     </div>
                 </button>
             </div>
 
             <div className="weather-items">
-                <h4>Weather</h4>
-                <button>
+                <h4 className="weather-heading">Weather</h4>
+                <button className="weather-button">
                     <div className="weather-values">
-                        <p>This is Stock data items</p>
+                        <img src="/img/clear_sky.png" />
+                        {weatherErrorCheck()}
                     </div>
                 </button>
             </div>
 
             <div className="covid-details">
                 <h4>Covid</h4>
-                <button>
+                <button className="covid-button">
                     <div className="covid-values">
-                        <p>This is Covid data items</p>
+                        <p>This is Covid data items, coming soon</p>
                     </div>
                 </button>
             </div>
