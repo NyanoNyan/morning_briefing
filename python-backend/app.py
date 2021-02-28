@@ -1,24 +1,18 @@
+from flask import Flask
+
+# Create the application instance
+app = Flask(__name__)
+
+# Create a URL route in our application for "/"
 @app.route('/')
 def index():
-    return "Welcome to Morning Briefing"
+    """
+    This function just responds to the browser URL
+    localhost:5000/
+    """
+    return "Hello World"
 
-@app.route('/login')
 
-
-
-weather data:
-
-convert current into hourly
-
-"dt": 1586390400,
-"temp": 278.41,
-"feels_like": 269.43,
-"humidity": 65,
-"wind_speed": 9.83,
-"weather": [
-          {
-            "id": 800,
-            "main": "Clear",
-            "description": "clear sky"
-          }
-        ]
+# If we're running in stand alone mode, run the application
+if __name__ == '__main__':
+    app.run(debug=True)
