@@ -64,7 +64,7 @@ def data_stocks():
 def report_csv():
     temperature = request.args.get('temperature')
 
-    data = pd.DataFrame({'current_temperature': temperature})
+    data = pd.DataFrame({'current_temperature': temperature}, index=[0])
     resp = make_response(data.to_csv())
     resp.headers["Content-Disposition"] = "attachment; filename=report.csv"
     resp.headers["Content-Type"] = "text/csv"
