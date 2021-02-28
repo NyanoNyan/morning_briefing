@@ -49,7 +49,13 @@ def data_weather():
 @app.route('/data/stocks', methods=['POST'])
 def data_stocks():
     symbol = request.args.get('symbol')
-    return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
+
+    example_stocks = [
+        {'date': '2021-02-26', 'openingPrice': 126.67},
+        {'date': '2021-02-25', 'openingPrice': 123.12}
+    ]
+
+    return json.dumps(example_stocks), 200, {'ContentType': 'application/json'}
 
 
 # If we're running in stand alone mode, run the application
