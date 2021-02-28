@@ -1,6 +1,7 @@
 import "../style/style.css";
 
-const SignIn = () => {
+const SignIn = (props) => {
+    const {logIn} = props;
     return (
 <>
   <title>Animated Login Form</title>
@@ -12,7 +13,7 @@ const SignIn = () => {
       <img src="img/bg.svg" />
     </div>
     <div className="login-content">
-      <form action="index.html" method="post">
+      <form  onSubmit={(e) => {logIn(e)}} >
         <h2 className="title">Sign in</h2>
         <div className="input-div one">
           <div className="i">
@@ -33,7 +34,7 @@ const SignIn = () => {
           </div>
         </div>
         <a className="forgot-password" href="#">Forgot Password?</a>
-        <input type="submit" className="btn" defaultValue="login" />
+        <input type="submit" className="btn" defaultValue="login"/>
         <a className="create-account" href="#">Don't have an account? </a>
       </form>
     </div>

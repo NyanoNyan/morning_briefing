@@ -43,7 +43,7 @@ const Briefing = () => {
           )
           .then(
             function(data) {
-              console.log(data);
+            //   console.log(data);
               setCurrentStock(Object.values(data['Time Series (Daily)'])[0])  ;
               for (var key in data['Time Series (Daily)']) {
                 stockChartXValuesFunction.push(key);
@@ -57,8 +57,8 @@ const Briefing = () => {
           )
     }
 
-    console.log(weatherData);
-    console.log(currentStock);
+    // console.log(weatherData);
+    // console.log(currentStock);
 
     const weatherErrorCheck = (weatherData) => {
         if (weatherData === {} || weatherData === undefined) {
@@ -85,6 +85,7 @@ const Briefing = () => {
     return (
         
         <div className="main-container" >
+            
             {/* <h3>Daily briefing</h3> */}
             <link href="https://fonts.googleapis.com/css?family=Poppins:600&display=swap" rel="stylesheet" />
             <div className="stock-items">
