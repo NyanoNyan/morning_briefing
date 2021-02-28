@@ -2,6 +2,13 @@
 blah blah blah
 
 ## Install
+### Front-End
+```bash
+cd /PATHTOPROJ/morning_briefing/morning_briefing_react
+npm install
+npm start
+```
+
 ### Python Backend
 Windows:
 If you don't know what the first command is, just ignore it ;):
